@@ -1,0 +1,164 @@
+class Z_OA2C_SPECIFICS_ZSFSF definition
+  public
+  inheriting from CL_OA2C_SPECIFICS_ABSTRACT
+  create public .
+
+public section.
+
+  methods IF_OA2C_SPECIFICS~GET_RESOURCE_ACCESS_PROPERTIES
+    redefinition .
+  methods IF_OA2C_SPECIFICS~GET_SAML20_AT_REQU_PARAM_NAMES
+    redefinition .
+  methods IF_OA2C_SPECIFICS~GET_SAML20_NO_B64URL_ENCODING
+    redefinition .
+  methods IF_OA2C_SPECIFICS~GET_SUPPORTED_CLIENT_AUTH
+    redefinition .
+  methods IF_OA2C_SPECIFICS~GET_SUPPORTED_GRANT_TYPES
+    redefinition .
+  methods IF_OA2C_SPECIFICS~GET_CONFIG_EXTENSION
+    redefinition .
+protected section.
+private section.
+ENDCLASS.
+
+
+
+CLASS Z_OA2C_SPECIFICS_ZSFSF IMPLEMENTATION.
+
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method Z_OA2C_SPECIFICS_ZSFSF->IF_OA2C_SPECIFICS~GET_CONFIG_EXTENSION
+* +-------------------------------------------------------------------------------------------------+
+* | [<-()] R_CONFIG_EXTENSION             TYPE        STRING
+* +--------------------------------------------------------------------------------------</SIGNATURE>
+  method IF_OA2C_SPECIFICS~GET_CONFIG_EXTENSION.
+*CALL METHOD SUPER->IF_OA2C_SPECIFICS~GET_CONFIG_EXTENSION
+*  RECEIVING
+*    R_CONFIG_EXTENSION =
+*    .
+
+    R_CONFIG_EXTENSION = 'ZSFSF'.
+  endmethod.
+
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method Z_OA2C_SPECIFICS_ZSFSF->IF_OA2C_SPECIFICS~GET_RESOURCE_ACCESS_PROPERTIES
+* +-------------------------------------------------------------------------------------------------+
+* | [<---] E_BEARER_TOKEN_SUPPORTED       TYPE        ABAP_BOOL
+* | [<---] E_BEARER_TOKEN_NAME            TYPE        STRING
+* | [<---] E_FORM_FIELD_SUPPORTED         TYPE        ABAP_BOOL
+* | [<---] E_FORM_FIELD_NAME              TYPE        STRING
+* +--------------------------------------------------------------------------------------</SIGNATURE>
+  method IF_OA2C_SPECIFICS~GET_RESOURCE_ACCESS_PROPERTIES.
+*CALL METHOD SUPER->IF_OA2C_SPECIFICS~GET_RESOURCE_ACCESS_PROPERTIES
+**  IMPORTING
+**    e_bearer_token_supported =
+**    e_bearer_token_name      =
+**    e_form_field_supported   =
+**    e_form_field_name        =
+*    .
+
+     e_bearer_token_supported  = abap_true.
+    e_bearer_token_name       = `Bearer`       ##NO_TEXT.
+
+    e_form_field_supported    = abap_false.
+
+  endmethod.
+
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method Z_OA2C_SPECIFICS_ZSFSF->IF_OA2C_SPECIFICS~GET_SAML20_AT_REQU_PARAM_NAMES
+* +-------------------------------------------------------------------------------------------------+
+* | [<---] E_CLIENT_ID                    TYPE        STRING
+* | [<---] E_CLIENT_SECRET                TYPE        STRING
+* | [<---] E_GRANT_TYPE                   TYPE        STRING
+* | [<---] E_GRANT_TYPE_VALUE             TYPE        STRING
+* | [<---] E_ASSERTION                    TYPE        STRING
+* | [<---] E_SCOPE                        TYPE        STRING
+* | [<---] ET_ADD_PARAM_NAMES             TYPE        TY_T_ADD_PARAM
+* +--------------------------------------------------------------------------------------</SIGNATURE>
+  METHOD if_oa2c_specifics~get_saml20_at_requ_param_names.
+
+    DATA: ls_add_param TYPE if_oa2c_specifics~ty_s_add_param.
+
+    CALL METHOD super->if_oa2c_specifics~get_saml20_at_requ_param_names
+      IMPORTING
+        e_client_id        = e_client_id
+        e_client_secret    = e_client_secret
+        e_grant_type       = e_grant_type
+        e_grant_type_value = e_grant_type_value
+        e_assertion        = e_assertion
+        e_scope            = e_scope.
+
+
+    ls_add_param-name = 'company_id'.
+    ls_add_param-mode = 1. "Filled during configuration from F4.
+    ls_add_param-default_value = 'ECIntAutoH2'.
+    INSERT ls_add_param INTO TABLE et_add_param_names.
+
+  ENDMETHOD.
+
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method Z_OA2C_SPECIFICS_ZSFSF->IF_OA2C_SPECIFICS~GET_SAML20_NO_B64URL_ENCODING
+* +-------------------------------------------------------------------------------------------------+
+* | [<-()] R_NO_B64URL_ENCODING           TYPE        ABAP_BOOL
+* +--------------------------------------------------------------------------------------</SIGNATURE>
+  method IF_OA2C_SPECIFICS~GET_SAML20_NO_B64URL_ENCODING.
+*CALL METHOD SUPER->IF_OA2C_SPECIFICS~GET_SAML20_NO_B64URL_ENCODING
+*  RECEIVING
+*    R_NO_B64URL_ENCODING =
+*    .
+
+    r_no_b64url_encoding = abap_true.  "Content-Type: application/x-www-form-urlencoded
+
+
+  endmethod.
+
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method Z_OA2C_SPECIFICS_ZSFSF->IF_OA2C_SPECIFICS~GET_SUPPORTED_CLIENT_AUTH
+* +-------------------------------------------------------------------------------------------------+
+* | [<---] E_BASIC_AUTHENTICATION         TYPE        ABAP_BOOL
+* | [<---] E_FORM_FIELDS                  TYPE        ABAP_BOOL
+* | [<---] E_CLIENT_CERTIFICATE           TYPE        ABAP_BOOL
+* +--------------------------------------------------------------------------------------</SIGNATURE>
+  METHOD if_oa2c_specifics~get_supported_client_auth.
+*CALL METHOD SUPER->IF_OA2C_SPECIFICS~GET_SUPPORTED_CLIENT_AUTH
+**  IMPORTING
+**    e_basic_authentication =
+**    e_form_fields          =
+**    e_client_certificate   =
+*    .
+
+    e_basic_authentication = abap_false.
+    e_form_fields          = abap_true.
+  ENDMETHOD.
+
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method Z_OA2C_SPECIFICS_ZSFSF->IF_OA2C_SPECIFICS~GET_SUPPORTED_GRANT_TYPES
+* +-------------------------------------------------------------------------------------------------+
+* | [<---] E_AUTHORIZATION_CODE           TYPE        ABAP_BOOL
+* | [<---] E_SAML20_ASSERTION             TYPE        ABAP_BOOL
+* | [<---] E_REFRESH                      TYPE        ABAP_BOOL
+* | [<---] E_REVOCATION                   TYPE        ABAP_BOOL
+* | [<---] E_ROPC                         TYPE        ABAP_BOOL
+* | [<---] E_CC                           TYPE        ABAP_BOOL
+* +--------------------------------------------------------------------------------------</SIGNATURE>
+  METHOD if_oa2c_specifics~get_supported_grant_types.
+*CALL METHOD SUPER->IF_OA2C_SPECIFICS~GET_SUPPORTED_GRANT_TYPES
+**  IMPORTING
+**    e_authorization_code =
+**    e_saml20_assertion   =
+**    e_refresh            =
+**    e_revocation         =
+**    e_ropc               =
+**    e_cc                 =
+*    .
+    e_authorization_code  = abap_false.
+    e_saml20_assertion    = abap_true.
+    e_refresh             = abap_false.
+    e_revocation          = abap_false.
+  ENDMETHOD.
+ENDCLASS.
