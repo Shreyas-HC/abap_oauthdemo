@@ -21,12 +21,16 @@ CONSTANTS: lc_content    TYPE string VALUE 'Content-Type',
 
 FIELD-SYMBOLS: <ls_field> LIKE LINE OF lt_fields.
 
+* **********************************************************************
+* * Instantiate HTTP Client
+* **********************************************************************
+
 CALL METHOD cl_http_client=>create_by_url
   EXPORTING
-    url                = `https://qacand-api.hcm.ondemand.com/odata/v2/User('ECADMIN')`   "'https://qacand-api.hcm.ondemand.com/odata/v2/Todo' "'https://apisalesdemo4.successfactors.com/odata/v2/upsert/'                 " URL
+    url                = `` "Enter the EC Instance URL here
     ssl_id             = 'ANONYM'                " SSL Identity
   IMPORTING
-    client             = lo_http_client               " HTTP Client Abstraction
+    client             = lo_http_client          " HTTP Client Abstraction
   EXCEPTIONS
     argument_not_found = 1                " Communication parameter (host or service) not available
     plugin_not_active  = 2                " HTTP/HTTPS communication not available
@@ -39,8 +43,6 @@ IF sy-subrc <> 0.
   MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
     WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
 ENDIF.
-
-*****CALL METHOD cl_http_client=>create_by_destination "ZSFSF_TEST
 
 lo_http_client->request->set_version( if_http_request=>co_protocol_version_1_0 ).
 
@@ -67,8 +69,8 @@ TRY.
 
     CALL METHOD cl_oauth2_client=>create
       EXPORTING
-        i_profile        = 'ZCLIENT'
-        i_configuration  = 'ZCLIENT'
+        i_profile        = 'ZCLIENT'   "Replace this
+        i_configuration  = 'ZCLIENT'   "Replace this
       RECEIVING
         ro_oauth2_client = lo_oa2c_client.
 
@@ -89,9 +91,7 @@ TRY.
   CATCH cx_oa2c INTO lx_oa2c.
     DATA(lv_text) = lx_oa2c->get_text( ).
     WRITE lv_text.
-    TRY.
-        "CALL METHOD lo_oa2c_client->execute_refresh_flow.
-        "CALL METHOD lo_oa2c_client->execute_cc_flow.
+    TRY.        
       CALL METHOD lo_oa2c_client->execute_saml20_flow.
 
       CATCH cx_oa2c INTO lx_oa2c.
@@ -116,6 +116,7 @@ ENDTRY.
 * **********************************************************************
 * * Send / Receive Request
 * **********************************************************************
+
 CALL METHOD lo_http_client->send
   EXCEPTIONS
     http_communication_failure = 1
