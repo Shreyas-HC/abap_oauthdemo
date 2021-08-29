@@ -20,14 +20,13 @@ START-OF-SELECTION.
 
   PERFORM start_new.
 
-
 FORM start_new.
 
   DATA: lv_status         TYPE i,
         lv_error_occurred TYPE flag,
         lv_error_msg      TYPE string,
         lv_response_body  TYPE string,
-        lv_url            TYPE String VALUE 'https://qacand-api.hcm.ondemand.com/odata/v2/$batch',
+        lv_url            TYPE String VALUE '', "Enter your EC Instance url here
         lv_json_user      TYPE string,
         lv_json_perperson TYPE string,
         lv_json_emp       TYPE string.
@@ -57,18 +56,6 @@ FORM start_new.
       plugin_not_active  = 2
       internal_error     = 3
       OTHERS             = 4 ).
-
-*  " Basic Authentication
-*  lo_client->propertytype_logon_popup = lo_client->co_disabled.
-*  lv_user = 'superuser@BPMCINSTANCE7'.
-*  lv_pwd = 'welcome1'.
-*
-*  CALL METHOD lo_client->authenticate
-*    EXPORTING
-*      username = lv_user
-*      password = lv_pwd.
-
-"OAuth Based Authentication
 
 * **********************************************************************
 * * Set OAuth 2.0 Token
@@ -465,7 +452,7 @@ FORM send_json_via_url USING
   " Create client
   cl_http_client=>create_by_url(
     EXPORTING
-      url                = 'https://apisalesdemo4.successfactors.com/odata/v2/upsert/'
+      url                = '' "Enter OData API url here
     IMPORTING
       client             = DATA(lo_client)
     EXCEPTIONS
@@ -474,21 +461,7 @@ FORM send_json_via_url USING
       internal_error     = 3
       OTHERS             = 4 ).
 
-  "Basic Authentication
-  lo_client->propertytype_logon_popup = lo_client->co_disabled.
-  lv_user = 'superuser@BPMCINSTANCE7'.
-  lv_pwd = 'welcome1'.
-
-  CALL METHOD lo_client->authenticate
-    EXPORTING
-*     proxy_authentication = ' '              " Proxy Logon (= 'X')
-*     client   =                  " R/3 system (client number from logon)
-      username = lv_user              " ABAP System, User Logon Name
-      password = lv_pwd              " Logon ID
-*     language =                  " SAP System, Current Language
-    .
-
-  "Get the Session ID
+   "Get the Session ID
   IF lv_sessionid IS INITIAL.
 
     lo_client->propertytype_accept_cookie = if_http_client=>co_enabled.
@@ -622,22 +595,6 @@ FORM trigger_upsert
   " Close connection
   lo_client->close( ).
 
-***  CALL FUNCTION 'CONVERT_STRING_TO_TABLE'
-***    EXPORTING
-***      i_string         = cv_response_body
-***      i_tabline_length = 150
-****     I_UNICODE        =
-***    TABLES
-***      et_table         = lt_table.
-***
-***
-***  DATA(json_writer) = cl_sxml_string_writer=>create(
-***                        type = if_sxml=>co_xt_json ).
-***  CALL TRANSFORMATION id SOURCE itab = lt_table
-***                         RESULT XML json_writer.
-***  DATA(json) = json_writer->get_output( ).
-***
-***  cl_demo_output=>display_json( json ).
 
 DATA(l_content_type) = lo_client->response->get_content_type( ).
   IF l_content_type CP `text/html*`.
