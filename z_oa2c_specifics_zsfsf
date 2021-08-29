@@ -92,7 +92,7 @@ CLASS Z_OA2C_SPECIFICS_ZSFSF IMPLEMENTATION.
 
     ls_add_param-name = 'company_id'.
     ls_add_param-mode = 1. "Filled during configuration from F4.
-    ls_add_param-default_value = ''. "Enter youe EC Instance Value
+    ls_add_param-default_value = ''. "Enter your EC Instance ID
     INSERT ls_add_param INTO TABLE et_add_param_names.
 
   ENDMETHOD.
