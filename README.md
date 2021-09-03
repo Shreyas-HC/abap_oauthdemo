@@ -1,5 +1,4 @@
 # abap_oauthdemo
-ABAP GitHub Demo
 
 Accessing SuccessFactors OData APIs using the OAuth 2.0 Client 
 
